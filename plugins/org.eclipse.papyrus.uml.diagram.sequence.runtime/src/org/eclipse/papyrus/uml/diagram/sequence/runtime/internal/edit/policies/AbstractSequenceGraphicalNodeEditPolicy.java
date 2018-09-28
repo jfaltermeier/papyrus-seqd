@@ -210,9 +210,13 @@ public abstract class AbstractSequenceGraphicalNodeEditPolicy extends GraphicalN
 					if ((absoluteY < startLocation.y())
 							|| !getLayoutConstraints().isAsyncMessageSlope(startLocation.preciseX(),
 									startLocation.preciseY(), location.preciseX(), location.preciseY())) {
-
-						absoluteY = startLocation.y();
-						location.setY(absoluteY);
+						if (absoluteY - startLocation.y() > -5) {
+							absoluteY = startLocation.y();
+							location.setY(absoluteY);
+						} else {
+							// slop up is not possible
+							return UnexecutableCommand.INSTANCE;
+						}
 					}
 
 					location = getRelativeLocation(location);

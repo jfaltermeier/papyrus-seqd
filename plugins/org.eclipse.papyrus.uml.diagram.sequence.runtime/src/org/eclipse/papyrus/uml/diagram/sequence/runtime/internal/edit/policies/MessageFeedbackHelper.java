@@ -119,8 +119,19 @@ class MessageFeedbackHelper extends FeedbackHelper {
 					// Constrain the message to horizontal
 					switch (mode) {
 						case CREATE:
-							// Bring the other end along (subject to magnet constraints)
-							otherLocation.setY(p.y());
+							if (!synchronous && delta < 0) {
+								/*
+								 * do not move an async message send up, because it can't be moved down since
+								 * we allow down-sloping
+								 */
+								if (delta > -5) {
+									thisLocation.setY(otherLocation.y());
+									recreateAnchor(anchor, thisLocation);
+								}
+							} else {
+								// Bring the other end along (subject to magnet constraints)
+								otherLocation.setY(p.y());
+							}
 
 							Optional<IMagnet> otherMagnet = magnetManager.getCapturingMagnet(otherLocation);
 							otherMagnet.map(IMagnet::getLocation).ifPresent(m -> {
